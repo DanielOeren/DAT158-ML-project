@@ -1,28 +1,57 @@
-# src/get_data.py
-import kagglehub, os
-from pathlib import Path
+import kagglehub
+import pathlib
+import shutil
+import sys
 
-# Download the dataset (cached under ~/.cache/kagglehub)
-path = Path(kagglehub.dataset_download("moltean/fruits")).resolve()
+PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[1]
+DATA_DIR = PROJECT_ROOT / "data"
+TARGET = DATA_DIR / "fruits-360_100x100"  # We normalize to this path
 
-# Common branches you might want:
-b100 = path / "fruits-360_100x100"
-orig = path / "fruits-360_original-size"
-three = path / "fruits-360_3-body-problem"
+def main():
+    print("Downloading Fruits-360 via kagglehub…")
+    base_path = pathlib.Path(kagglehub.dataset_download("moltean/fruits"))
+    print(f"KaggleHub base: {base_path}")
 
-print("KaggleHub root:", path)
-print("100x100:", b100 if b100.exists() else "NOT FOUND")
-print("original-size:", orig if orig.exists() else "NOT FOUND")
-print("3-body-problem:", three if three.exists() else "NOT FOUND")
+    # Find the 100x100 branch inside the downloaded cache
+    candidates = list(base_path.rglob("fruits-360_100x100"))
+    if not candidates:
+        # Fallback: look for a Training folder under any path that has '100x100'
+        candidates = [p.parent for p in base_path.rglob("Training") if "100x100" in str(p)]
+    if not candidates:
+        print("ERROR: Could not locate 'fruits-360_100x100' in the downloaded dataset.")
+        sys.exit(1)
 
-# Optional: create a convenient symlink under ./data so the rest of your code can refer to it
-project_data = Path(__file__).resolve().parents[1] / "data"
-project_data.mkdir(exist_ok=True)
+    src_100 = candidates[0]
+    print(f"Found 100x100 branch at: {src_100}")
 
-# Change which branch you prefer to link by editing BRANCH below:
-BRANCH = b100  # or orig / three
-link = project_data / BRANCH.name
-if link.exists() or link.is_symlink():
-    link.unlink()
-link.symlink_to(BRANCH)
-print(f"Linked {BRANCH} -> {link}")
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    # If existing, remove to refresh the pointer/copy
+    if TARGET.exists() or TARGET.is_symlink():
+        try:
+            if TARGET.is_symlink():
+                TARGET.unlink()
+            else:
+                shutil.rmtree(TARGET)
+        except Exception as e:
+            print(f"Warning: could not clean existing target: {e}")
+
+    # Prefer symlink to avoid duplicating data
+    try:
+        TARGET.symlink_to(src_100, target_is_directory=True)
+        print(f"Created symlink: {TARGET} -> {src_100}")
+    except (OSError, NotImplementedError) as e:
+        print(f"Symlink not available ({e}); copying files. This may take a while…")
+        shutil.copytree(src_100, TARGET)
+        print(f"Copied dataset to: {TARGET}")
+
+    # Basic sanity
+    train_dir = TARGET / "Training"
+    test_dir = TARGET / "Test"
+    if not train_dir.exists() or not test_dir.exists():
+        print("ERROR: Expected 'Training/' and 'Test/' under fruits-360_100x100.")
+        sys.exit(1)
+
+    print("Dataset ready at:", TARGET)
+
+if __name__ == "__main__":
+    main()

@@ -1,6 +1,11 @@
-tensorflow>=2.14 ; platform_system != "Darwin" or platform_machine != "arm64"
-tensorflow-macos>=2.14 ; platform_system == "Darwin" and platform_machine == "arm64"
-gradio>=4.0
+# Download dataset
+kagglehub>=0.2.5
+
+# ML / app
 numpy>=1.26
 pillow>=10.0
-kagglehub>=0.3
+gradio>=4.0
+
+# TensorFlow (choose appropriate wheel automatically)
+tensorflow>=2.14 ; platform_system != "Darwin" or platform_machine != "arm64"
+tensorflow-macos>=2.14 ; platform_system == "Darwin" and platform_machine == "arm64"
