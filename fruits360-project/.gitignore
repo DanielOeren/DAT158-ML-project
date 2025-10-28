@@ -1,0 +1,35 @@
+# Python & venv
+.venv/
+env/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Logs & temp
+*.log
+*.tmp
+
+# Model & outputs
+*.h5
+*.hdf5
+*.keras
+*.pt
+*.onnx
+*.ckpt
+*.tflite
+*.pkl
+.ipynb_checkpoints/
+
+# Project-specific artifacts
+class_names.json
+
+# Data (keep repo small)
+data/
+!data/.gitkeep
