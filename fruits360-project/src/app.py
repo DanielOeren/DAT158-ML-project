@@ -5,14 +5,14 @@ import gradio as gr
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MODEL_PATH = ROOT / "fruit_model.h5"
+MODEL_PATH = ROOT / "fruit_model.keras"
 CLASS_PATH = ROOT / "class_names.json"
 
 # Load artifacts
 if not MODEL_PATH.exists() or not CLASS_PATH.exists():
     raise SystemExit("Missing model artifacts. Train first: python src/train.py")
 
-model = tf.keras.models.load_model(MODEL_PATH)
+model = tf.keras.models.load_model(MODEL_PATH, compile=False)
 CLASS_NAMES = json.load(open(CLASS_PATH))
 IMG_H, IMG_W = model.input_shape[1:3]
 
