@@ -70,7 +70,7 @@ model.compile(
     metrics=["accuracy", tf.keras.metrics.TopKCategoricalAccuracy(k=5, name="top5")]
 )
 
-ckpt_path = ROOT / "fruit_model.h5"
+ckpt_path = ROOT / "fruit_model.keras"
 callbacks = [
     tf.keras.callbacks.ModelCheckpoint(str(ckpt_path), save_best_only=True, monitor="val_accuracy"),
     tf.keras.callbacks.EarlyStopping(patience=2, restore_best_weights=True, monitor="val_accuracy"),
