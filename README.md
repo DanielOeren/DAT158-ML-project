@@ -17,7 +17,7 @@ pip install -r requirements.txt
 # 1) Download dataset into data/
 python src/get_data.py
 
-# 2) Train (produces fruit_model.h5 & class_names.json at repo root)
+# 2) Train (produces fruit_model.keras & class_names.json at repo root)
 python src/train.py
 
 # 3) Run the app and upload an image
