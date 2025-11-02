@@ -13,8 +13,8 @@ if not (DATA_ROOT / "Training").exists():
     raise SystemExit("Dataset not found. Run: python src/get_data.py")
 
 # ----- Config -----
-IMG_SIZE = (96, 96)   # 96x96 branch
-BATCH = 128
+IMG_SIZE = (100, 100)   # 100x100 branch
+BATCH = 16
 EPOCHS = 3
 SEED = 1337
 AUTOTUNE = tf.data.AUTOTUNE
