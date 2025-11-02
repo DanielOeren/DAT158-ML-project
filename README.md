@@ -1,5 +1,5 @@
 # DAT158-ML-project
-Group project for DAT158
+Group project for DAT158 by Daniel Øren, Sondre Hafsås, Simon Indrekvam
 
 # Fruits-360 Classifier (VS Code)
 
